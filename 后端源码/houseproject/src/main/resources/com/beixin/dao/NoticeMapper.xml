@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.beixin.dao.NoticeMapper">
+
+        <!-- 通用查询映射结果 -->
+        <resultMap id="BaseResultMap" type="com.beixin.model.Notice">
+                    <id column="id" property="id"/>
+                    <result column="content" property="content"/>
+                    <result column="date" property="date"/>
+                    <result column="djr" property="djr"/>
+                    <result column="update_time" property="updateTime"/>
+                    <result column="xgr" property="xgr"/>
+        </resultMap>
+
+        <!-- 通用查询结果列 -->
+        <sql id="Base_Column_List">
+            id, content, date, djr, update_time, xgr
+        </sql>
+
+    <select id="queryNoticeAll" parameterType="com.beixin.model.Notice" resultType="com.beixin.model.Notice">
+        select * from notice
+        <where>
+        <if test="content!=null and content!=''">
+            and content like '%${content}%'
+        </if>
+        </where>
+        order by id desc
+    </select>
+</mapper>

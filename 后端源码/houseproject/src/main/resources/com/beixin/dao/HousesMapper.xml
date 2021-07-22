@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.beixin.dao.HousesMapper">
+
+        <!-- 通用查询映射结果 -->
+        <resultMap id="BaseResultMap" type="com.beixin.model.Houses">
+                    <id column="id" property="id"/>
+                    <result column="numbers" property="numbers"/>
+                    <result column="owner_id" property="ownerId"/>
+                    <result column="address" property="address"/>
+                    <result column="type" property="type"/>
+                    <result column="imgs" property="imgs"/>
+                    <result column="province" property="province"/>
+                    <result column="city" property="city"/>
+                    <result column="county" property="county"/>
+                    <result column="sort" property="sort"/>
+                    <result column="status" property="status"/>
+                    <result column="remarks" property="remarks"/>
+                    <result column="create_time" property="createTime"/>
+                    <result column="create_by" property="createBy"/>
+                    <result column="update_time" property="updateTime"/>
+                    <result column="area" property="area"/>
+                    <result column="price" property="price"/>
+        </resultMap>
+
+        <!-- 通用查询结果列 -->
+        <sql id="Base_Column_List">
+            id, numbers, owner_id, address, type, imgs, province, city, county, sort, status, remarks, create_time, create_by, update_time, area, price
+        </sql>
+
+
+    <resultMap id="queryHouseAllMap" type="com.beixin.model.Houses" extends="BaseResultMap">
+        <association property="owner" javaType="com.beixin.model.Owner">
+            <id column="id" property="id"></id>
+            <result column="custname" property="custname"></result>
+        </association>
+    </resultMap>
+
+
+    <select id="queryHouseAll" parameterType="com.beixin.model.Houses"  resultMap="queryHouseAllMap">
+        select hou.*,own.custname from houses hou,owner own where own.id=hou.owner_id
+        <if test="numbers!=null  and numbers!=''">
+            and numbers like '%${numbers}%'
+        </if>
+        <if test="status!=null  and status!=''">
+            and status =#{status}
+        </if>
+    </select>
+
+
+    <select id="queryHouseAll2" parameterType="int"  resultType="com.beixin.model.Houses">
+SELECT
+	hou.*, look.stutas AS zt,
+	look.id AS lookId
+FROM
+	houses hou
+LEFT JOIN (
+	SELECT
+		*
+	FROM
+		lookhouse
+	WHERE
+		customer_id = #{customerId}
+	ORDER BY
+		id DESC
+	LIMIT 1
+) look ON look.houses_id = hou.id
+WHERE
+	hou.`status` = 1
+
+    </select>
+</mapper>

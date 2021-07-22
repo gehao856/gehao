@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.beixin.dao.ContractMapper">
+
+        <!-- 通用查询映射结果 -->
+        <resultMap id="BaseResultMap" type="com.beixin.model.Contract">
+                    <id column="id" property="id"/>
+                    <result column="customer_id" property="customerId"/>
+                    <result column="houses_id" property="housesId"/>
+                    <result column="qzrq" property="qzrq"/>
+                    <result column="kfrq" property="kfrq"/>
+                    <result column="tzrq" property="tzrq"/>
+                    <result column="money" property="money"/>
+                    <result column="create_time" property="createTime"/>
+                    <result column="djr" property="djr"/>
+                    <result column="update_time" property="updateTime"/>
+                    <result column="xgr" property="xgr"/>
+                    <result column="rent_id" property="rentId"/>
+                    <result column="payrent" property="payrent"/>
+        </resultMap>
+
+        <!-- 通用查询结果列 -->
+        <sql id="Base_Column_List">
+            id, customer_id, houses_id, qzrq, kfrq, tzrq, money, create_time, djr, update_time, xgr, rent_id, payrent
+        </sql>
+
+    <select id="queryByHeTongId" parameterType="int" resultType="com.beixin.model.HeTong">
+       SELECT
+                cus.custname AS zlf,
+                own.custname AS czf,
+                con.qzrq as qzsj,
+                con.tzrq as jzsj,
+                con.money as price,
+                hou.address
+            FROM
+                contract con
+            LEFT JOIN houses hou ON hou.id = con.houses_id
+            LEFT JOIN OWNER own ON own.id = hou.owner_id
+            LEFT JOIN customer cus ON cus.id = con.customer_id
+            where con.id=#{id}
+
+    </select>
+</mapper>

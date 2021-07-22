@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.beixin.dao.LookhouseMapper">
+
+        <!-- 通用查询映射结果 -->
+        <resultMap id="BaseResultMap" type="com.beixin.model.Lookhouse">
+                    <id column="id" property="id"/>
+                    <result column="houses_id" property="housesId"/>
+                    <result column="customer_id" property="customerId"/>
+                    <result column="look_date" property="lookDate"/>
+                    <result column="remarks" property="remarks"/>
+                    <result column="date" property="date"/>
+                    <result column="djr" property="djr"/>
+                    <result column="update_time" property="updateTime"/>
+                    <result column="xgr" property="xgr"/>
+                    <result column="stutas" property="stutas"/>
+        </resultMap>
+
+        <!-- 通用查询结果列 -->
+        <sql id="Base_Column_List">
+            id, houses_id, customer_id, look_date, remarks, date, djr, update_time, xgr, stutas
+        </sql>
+
+    <resultMap id="queryLookHouseAllMap" type="com.beixin.model.Lookhouse" extends="BaseResultMap">
+        <association property="customer" javaType="com.beixin.model.Customer">
+            <id column="id" property="id"></id>
+            <result column="identity" property="identity"/>
+            <result column="custname" property="custname"/>
+            <result column="phone" property="phone"/>
+        </association>
+        <association property="houses" javaType="com.beixin.model.Houses">
+            <id column="id" property="id"></id>
+            <result column="numbers" property="numbers"/>
+            <result column="address" property="address"/>
+            <result column="price" property="price"/>
+            <result column="area" property="area"/>
+        </association>
+    </resultMap>
+
+    <select id="queryLookHouseAll" parameterType="com.beixin.model.Lookhouse"
+            resultMap="queryLookHouseAllMap">
+        SELECT
+        look.*, cus.custname,
+        cus.phone,
+        cus.identity,
+        hou.numbers,
+        hou.address,
+        hou.area,
+        hou.price
+        FROM
+        lookhouse look,
+        customer cus,
+        houses hou
+        where look.houses_id=hou.id and look.customer_id=cus.id
+        and look.stutas=0
+
+        <if test="customer!=null">
+            <if test="customer.identity!=null and customer.identity!=''">
+                and   identity like '%${customer.identity}%'
+            </if>
+        </if>
+        <if test="houses!=null">
+            <if test="houses.numbers!=null and houses.numbers!=''">
+                and   numbers like '%${houses.numbers}%'
+            </if>
+        </if>
+
+    </select>
+
+    <resultMap id="queryByIdMap" type="com.beixin.model.Lookhouse" extends="queryLookHouseAllMap">
+        <association property="owners" javaType="com.beixin.model.Owner">
+            <id column="id" property="id"></id>
+            <result column="sfzh" property="identity"/>
+            <result column="ownname" property="custname"/>
+        </association>
+    </resultMap>
+
+    <select id="queryById" resultMap="queryByIdMap">
+        SELECT
+            look.id,look.customer_id,look.houses_id, cus.custname,
+            cus.phone,
+            cus.identity,
+            hou.numbers,
+            hou.address,
+            hou.area,
+            hou.price,
+            own.custname as ownname,
+						own.identity as sfzh
+        FROM
+            lookhouse look,
+            customer cus,
+            houses hou,`owner` own
+        where look.houses_id=hou.id and look.customer_id=cus.id
+             and own.id=hou.owner_id
+             and look.id=#{id}
+   </select>
+
+
+</mapper>

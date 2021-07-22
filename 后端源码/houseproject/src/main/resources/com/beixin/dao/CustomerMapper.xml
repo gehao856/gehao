@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.beixin.dao.CustomerMapper">
+
+        <!-- 通用查询映射结果 -->
+        <resultMap id="BaseResultMap" type="com.beixin.model.Customer">
+                    <id column="id" property="id"/>
+                    <result column="identity" property="identity"/>
+                    <result column="password" property="password"/>
+                    <result column="custname" property="custname"/>
+                    <result column="sex" property="sex"/>
+                    <result column="address" property="address"/>
+                    <result column="phone" property="phone"/>
+                    <result column="career" property="career"/>
+                    <result column="remarks" property="remarks"/>
+                    <result column="create_time" property="createTime"/>
+                    <result column="djr" property="djr"/>
+                    <result column="update_time" property="updateTime"/>
+                    <result column="xgr" property="xgr"/>
+        </resultMap>
+
+        <!-- 通用查询结果列 -->
+        <sql id="Base_Column_List">
+            id, identity, password, custname, sex, address, phone, career, remarks, create_time, djr, update_time, xgr
+        </sql>
+    
+       <select id="queryAll" parameterType="com.beixin.model.Customer" resultType="com.beixin.model.Customer">
+           select * from customer
+           <where>
+               <if test="identity!=null and identity!=''">
+                   and identity like '%${identity}%'
+               </if>
+               <if test="custname!=null and custname!=''">
+                   and custname like '%${custname}%'
+               </if>
+           </where>
+           order by id desc
+       </select>
+
+    <select id="queryUserByNameAndPwd" resultType="com.beixin.model.Customer">
+        select * from customer where custname=#{username} and password=#{password}
+    </select>
+
+</mapper>

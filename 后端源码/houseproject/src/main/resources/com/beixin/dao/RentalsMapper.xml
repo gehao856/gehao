@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.beixin.dao.RentalsMapper">
+
+        <!-- 通用查询映射结果 -->
+        <resultMap id="BaseResultMap" type="com.beixin.model.Rentals">
+                    <id column="id" property="id"/>
+                    <result column="houses_id" property="housesId"/>
+                    <result column="customer_id" property="customerId"/>
+                    <result column="money" property="money"/>
+                    <result column="address" property="address"/>
+                    <result column="jzrq" property="jzrq"/>
+                    <result column="jfr" property="jfr"/>
+                    <result column="remarks" property="remarks"/>
+                    <result column="date" property="date"/>
+                    <result column="djr" property="djr"/>
+                    <result column="update_time" property="updateTime"/>
+                    <result column="xgr" property="xgr"/>
+                    <result column="ksrq" property="ksrq"/>
+        </resultMap>
+
+        <!-- 通用查询结果列 -->
+        <sql id="Base_Column_List">
+            id, houses_id, customer_id, money, address, jzrq, jfr, remarks, date, djr, update_time, xgr, ksrq
+        </sql>
+
+        <select id="queryList" parameterType="com.beixin.model.RentalsVo" resultType="com.beixin.model.RentalsVo">
+            SELECT
+            tals.* ,custname,cus.phone,cus.identity,hou.numbers,hou.address
+            FROM
+            rentals tals,
+            houses hou,
+            customer cus
+            WHERE
+            hou.id = tals.houses_id
+            AND hou.`status` = 2
+            AND cus.id = tals.customer_id
+            <if test="numbers!=null and numbers!=''">
+                and numbers like '%${numbers}%'
+            </if>
+            <if test="custname!=null and custname!=''">
+                and custname like '%${custname}%'
+            </if>
+            <if test="customerId!=null ">
+                and customer_id =#{customerId}
+            </if>
+        </select>
+
+    <select id="queryCount" resultType="com.beixin.model.TongJi">
+        SELECT
+	            sum(money) counts,
+               MONTH  (date) months
+        FROM
+            rentals
+        where YEAR(date)=YEAR(NOW())
+        GROUP BY
+            MONTH (date)
+        ORDER BY
+            MONTH  (date) DESC
+    </select>
+
+</mapper>

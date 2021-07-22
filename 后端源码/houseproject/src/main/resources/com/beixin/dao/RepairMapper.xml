@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.beixin.dao.RepairMapper">
+
+        <!-- 通用查询映射结果 -->
+        <resultMap id="BaseResultMap" type="com.beixin.model.Repair">
+                    <id column="id" property="id"/>
+                    <result column="houses_id" property="housesId"/>
+                    <result column="customer_id" property="customerId"/>
+                    <result column="remarks" property="remarks"/>
+                    <result column="date" property="date"/>
+                    <result column="djr" property="djr"/>
+                    <result column="update_time" property="updateTime"/>
+                    <result column="xgr" property="xgr"/>
+                    <result column="status" property="status"/>
+                    <result column="name" property="name"/>
+        </resultMap>
+
+        <!-- 通用查询结果列 -->
+        <sql id="Base_Column_List">
+            id, houses_id, customer_id, remarks, date, djr, update_time, xgr, status, name
+        </sql>
+    <resultMap id="queryListMap" type="com.beixin.model.Repair" extends="BaseResultMap">
+        <association property="customer" javaType="com.beixin.model.Customer">
+            <id column="id" property="id"></id>
+            <result column="identity" property="identity"/>
+            <result column="custname" property="custname"/>
+            <result column="phone" property="phone"/>
+        </association>
+        <association property="houses" javaType="com.beixin.model.Houses">
+            <id column="id" property="id"></id>
+            <result column="numbers" property="numbers"/>
+            <result column="address" property="address"/>
+        </association>
+    </resultMap>
+
+    <select id="queryList" parameterType="com.beixin.model.Repair" resultMap="queryListMap">
+        SELECT
+        rep.*, hou.numbers,
+        hou.address,
+        cus.custname,
+        cus.phone
+        FROM
+        `repair` rep
+        LEFT JOIN houses hou ON hou.id = rep.houses_id
+        LEFT JOIN customer cus ON cus.id = rep.customer_id
+        <where>
+            <if test="houses!=null">
+                <if test="houses.numbers!=null and houses.numbers!=''">
+                    and   numbers like '%${houses.numbers}%'
+                </if>
+            </if>
+            <if test="status!=null">
+                and   rep.status =#{status}
+            </if>
+            <if test="customerId!=null">
+                and   rep.customer_Id =#{customerId}
+            </if>
+        </where>
+    </select>
+
+    <select id="queryCount" resultType="com.beixin.model.TongJi">
+
+          SELECT
+	            count(id) counts,
+               MONTH  (date) months
+        FROM
+            `repair`
+        where YEAR(date)=YEAR(NOW())
+        GROUP BY
+            MONTH (date)
+        ORDER BY
+            MONTH  (date) DESC
+
+    </select>
+</mapper>
