@@ -1,0 +1,91 @@
+<div class="layuimini-main">
+
+    <div class="layui-form layuimini-form">
+        <div class="layui-form-item">
+            <label class="layui-form-label required">登录名称</label>
+            <div class="layui-input-block">
+                <input type="text" name="username" lay-verify="required" lay-reqtext="登录名称不能为空" placeholder="请输入登录名称" value="" class="layui-input">
+                <tip>填写登录名称。</tip>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label required">真实姓名</label>
+            <div class="layui-input-block">
+                <input type="text" name="realname" lay-verify="required"   class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label required">密码</label>
+            <div class="layui-input-block">
+                <input type="password" name="password" lay-verify="required"   class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label required">性别</label>
+            <div class="layui-input-block">
+                <input type="radio" name="sex" value="男" title="男">
+                <input type="radio" name="sex" value="女" title="女">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label required">手机</label>
+            <div class="layui-input-block">
+                <input type="text" name="tel" lay-verify="required" lay-reqtext="手机不能为空" placeholder="请输入手机" value="" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">邮箱</label>
+            <div class="layui-input-block">
+                <input type="email" name="email"  class="layui-input">
+            </div>
+        </div>
+
+
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn layui-btn-normal" lay-submit lay-filter="saveBtn">确认保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    layui.use(['form', 'table'], function () {
+        var form = layui.form,
+            layer = layui.layer,
+            // table = layui.table,
+            $ = layui.$;
+        form.render();
+        //监听提交
+        form.on('submit(saveBtn)', function (data) {
+            console.log(data.field);
+            //向后台发送数据并进行添加操作
+            $.ajax({
+                url:SURL+"user/add",
+                type:"POST",
+                contentType:"application/json",
+                data:JSON.stringify(data.field),
+                success:function(result){
+                    console.log(result)
+                    if(result.code==200){
+                        layer.msg("添加成功",{
+                            icon:6,
+                            time:500
+                        },function(){
+                            parent.window.location.reload();//重新页面
+                            var iframeIndex = parent.layer.getFrameIndex(window.name);
+                            parent.layer.close(iframeIndex);
+                        });
+
+                    }else{
+                        layer.msg("添加失败");
+                    }
+                }
+            })
+            return false;
+        });
+    });
+</script>

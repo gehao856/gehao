@@ -1,0 +1,144 @@
+
+<div class="layuimini-main">
+ <div class="layui-form layuimini-form" lay-filter="updateSubmit">
+ 	 <input type="hidden" name="customerId" >
+ 	 <input type="hidden" name="housesId" >
+     <input type="hidden" name="rentId" >
+        <div class="layui-form-item">
+            <label class="layui-form-label required">房屋编号</label>
+            <div class="layui-input-block">
+                <input type="text" name="numbers" lay-verify="required"  value="" class="layui-input">
+                <tip>填写房屋编号。</tip>
+            </div>
+        </div>
+
+       <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">详细地址</label>
+            <div class="layui-input-block">
+              <input type="text" name="address" lay-verify="required"  class="layui-input">
+            </div>
+        </div>
+
+       <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">出租方</label>
+            <div class="layui-input-block">
+            	<input type="text" name="ownername" lay-verify="required"  class="layui-input">
+            </div>
+        </div>
+      
+       <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">出租方身份证号</label>
+            <div class="layui-input-block">
+               <input type="text" name="sfzh" lay-verify="required"  class="layui-input">
+            </div>
+        </div>
+       <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">承租方</label>
+            <div class="layui-input-block">
+                <input type="text" name="custname" lay-verify="required"  class="layui-input">
+            </div>
+        </div>
+      
+       <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">承租方身份证号</label>
+            <div class="layui-input-block">
+                <input type="text" name="identity" lay-verify="required"  class="layui-input">
+            </div>
+        </div>
+
+         <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">起租时间</label>
+            <div class="layui-input-block">
+                <input type="text" name="qzrq" id="date"
+                       lay-verify="date" placeholder="yyyy-MM-dd" autocomplete="off" class="layui-input date">
+            </div>
+        </div>
+          <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">结束时间</label>
+            <div class="layui-input-block">
+                <input type="text" name="tzrq" id="date2"
+                       lay-verify="date" placeholder="yyyy-MM-dd" autocomplete="off" class="layui-input date">
+            </div>
+        </div>
+
+       <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">实际收费</label>
+            <div class="layui-input-block">
+               <input type="text" name="paymoney" lay-verify="required"  class="layui-input">
+            </div>
+        </div>
+          
+          <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">交租日(数字)</label>
+            <div class="layui-input-block">
+
+                <input type="text" name="payrent" lay-verify="required"  class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn layui-btn-normal" lay-submit  lay-filter="updateSubmit">确认租赁</button>
+            </div>
+        </div>
+
+
+</div>
+</div>
+<script>
+    layui.use(['form', 'table', 'upload','laydate'], function () {
+        var form = layui.form,
+            layer = layui.layer,
+            laydate=layui.laydate,
+            $ = layui.$,
+            upload = layui.upload;
+
+        //如果只有一个渲染
+        //日期
+        // laydate.render({
+        //     elem: '#date',
+        //     trigger:'click'
+        // });
+
+        //多个事件格式的渲染
+        lay('.date').each(function() {
+            laydate.render({
+                elem : this,//元素
+                trigger : 'click'//,//怎么触发
+                // type : 'datetime',//格式
+                // format : 'yyyy-MM-dd'
+            });
+        });
+
+        //监听提交
+        form.on('submit(updateSubmit)', function (data) {
+            console.log(data.field);
+            //向后台发送数据并进行添加操作 添加合同
+            $.ajax({
+                url:SURL+"/contract/add",
+                type:"POST",
+                contentType:"application/json",
+                data:JSON.stringify(data.field),
+                success:function(result){
+                    //把json对象转string
+                    // result=JSON.parse(result);
+                    console.log(result)
+                    if(result.code==200){
+                        layer.msg("租赁成功",{
+                            icon:6,
+                            time:500
+                        },function(){
+                            parent.window.location.reload();//重新页面
+                            var iframeIndex = parent.layer.getFrameIndex(window.name);
+                            parent.layer.close(iframeIndex);
+                        });
+
+                    }else{
+                        layer.msg("添加失败");
+                    }
+                }
+            })
+            return false;
+        });
+    });
+</script>

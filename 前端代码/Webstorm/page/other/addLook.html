@@ -1,0 +1,65 @@
+<div class="layuimini-main">
+    <div class="layui-form layuimini-form" lay-filter="updateSubmit">
+        <input type="hidden" name="housesId" id="housesId" />
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">看房时间</label>
+            <div class="layui-input-block">
+                <input type="text" name="lookDate" id="date"
+                       lay-verify="date" placeholder="yyyy-MM-dd" autocomplete="off" class="layui-input date">
+            </div>
+        </div>
+
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">备注信息</label>
+            <div class="layui-input-block">
+                <textarea name="remarks" class="layui-textarea" placeholder="请输入备注信息"></textarea>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn layui-btn-normal" lay-submit lay-filter="updateSubmit">确认申请</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    layui.use(['form', 'table','laydate'], function () {
+        var form = layui.form,
+            layer = layui.layer,
+            laydate=layui.laydate,
+            $ = layui.$;
+        laydate.render({
+            elem: '#date',
+            trigger:'click'
+        });
+        //监听提交
+        form.on('submit(updateSubmit)', function (data) {
+            console.log(data.field);
+            debugger
+            //向后台发送数据并进行添加操作
+            $.ajax({
+                url:SURL+"/lookhouse/add",
+                type:"POST",
+                contentType:"application/json",
+                data:JSON.stringify(data.field),
+                success:function(result){
+                    if(result.code==200){
+                        layer.msg("申请成功",{
+                            icon:6,
+                            time:500
+                        },function(){
+                            parent.window.location.reload();//重新页面
+                            var iframeIndex = parent.layer.getFrameIndex(window.name);
+                            parent.layer.close(iframeIndex);
+                        });
+
+                    }else{
+                        layer.msg("申请失败");
+                    }
+                }
+            })
+            return false;
+        });
+    });
+</script>

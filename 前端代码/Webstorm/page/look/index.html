@@ -1,0 +1,273 @@
+<div class="layuimini-container layuimini-page-anim">
+    <div class="layuimini-main">
+
+        <div class="demoTable">
+            房屋编号：
+            <div class="layui-inline">
+                <input class="layui-input" name="numbers" id="numbers" autocomplete="off">
+            </div>
+            身份证号码：
+            <div class="layui-inline">
+                <input class="layui-input" name="identity" id="identity" autocomplete="off">
+            </div>
+            <button class="layui-btn" data-type="reload">高级查询</button>
+        </div>
+
+
+        <script type="text/html" id="toolbarDemo">
+            <div class="layui-btn-container">
+                <button class="layui-btn layui-btn-sm layui-btn-danger data-delete-btn" lay-event="delete"> 删除 </button>
+            </div>
+        </script>
+
+        <table class="layui-hide" id="currentTableId" lay-filter="currentTableFilter"></table>
+
+        <script type="text/html" id="currentTableBar">
+            <a class="layui-btn layui-btn-normal layui-btn-xs data-count-edit" lay-event="edit">同意租赁</a>
+            <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete" lay-event="jujue">拒绝租赁</a>
+        </script>
+
+    </div>
+</div>
+
+<script>
+    layui.use(['form', 'table','miniPage','element'], function () {
+        var $ = layui.jquery,
+            form = layui.form,
+            table = layui.table,
+            miniPage = layui.miniPage;
+
+        table.render({
+            elem: '#currentTableId',
+            url: SURL+'lookhouse/queryLookHouseAll',
+            toolbar: '#toolbarDemo',
+            defaultToolbar: ['filter', 'exports', 'print', {
+                title: '提示',
+                layEvent: 'LAYTABLE_TIPS',
+                icon: 'layui-icon-tips'
+            }],
+            cols: [[
+                {type: "checkbox", width: 50},
+                // {field: 'id', width: 80, title: 'ID', sort: true},
+                {templet:'<div>{{d.houses.numbers}}</div>',width: 100, title: '房屋编号'},
+                {templet:'<div>{{d.houses.price}}</div>',width: 80, title: '租价'},
+                {templet:'<div>{{d.houses.area}}</div>',width: 80, title: '面积'},
+                {templet:'<div>{{d.customer.custname}}</div>',width: 80, title: '申请人'},
+                {templet:'<div>{{d.customer.identity}}</div>',width: 120, title: '身份证号'},
+                {templet:'<div>{{d.customer.phone}}</div>',width: 120, title: '联系方式'},
+                {templet:'<div>{{d.houses.address}}</div>',width: 150, title: '房地址'},
+                {field: 'lookDate', width: 180, title: '看房时间'},
+                {title: '操作', minWidth: 150, toolbar: '#currentTableBar', align: "center"}
+            ]],
+            limits: [10, 15, 20, 25, 50, 100],
+            limit: 15,
+            page: true,
+            id:'testReload',
+            skin: 'line'
+        });
+
+        var $ = layui.$, active = {
+            reload: function(){
+                var numbers = $('#numbers');
+                var identity = $('#identity');
+
+                //执行重载
+                table.reload('testReload', {
+                    page: {
+                        //curr: 1 //重新从第 1 页开始
+                    }
+                    ,where: {
+                        identity:identity.val(),
+                        numbers:numbers.val()
+                    }
+                });
+            }
+        };
+
+        $('.demoTable .layui-btn').on('click', function(){
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+
+        /**
+         * toolbar事件监听
+         */
+        table.on('toolbar(currentTableFilter)', function (obj) {
+            if (obj.event === 'add') {   // 监听添加操作
+                var content = miniPage.getHrefContent('page/owner/add.html');
+                var openWH = miniPage.getOpenWidthHeight();
+
+                var index = layer.open({
+                    title: '添加户主信息',
+                    type: 1,
+                    shade: 0.2,
+                    maxmin:true,
+                    shadeClose: true,
+                    area: [openWH[0] + 'px', openWH[1] + 'px'],
+                    offset: [openWH[2] + 'px', openWH[3] + 'px'],
+                    content: content,
+                });
+                $(window).on("resize", function () {
+                    layer.full(index);
+                });
+            } else if (obj.event === 'delete') {  // 监听删除操作
+                var checkStatus = table.checkStatus(obj.config.id)
+                    , data = checkStatus.data;
+                /**
+                 *  首先判断是否选择信息，如果没有提示
+                 *  如果有
+                 *     1、获取选中的id集合
+                 *     2、通过ajax请求发送id集合，进行业务处理
+                 */
+                if (data.length==0){
+                    layer.msg("请选中你要删除的信息")
+                }else {
+                    //获取删除id的集合
+                    var ids=getCheckId(data);
+                    layer.confirm("你真的要删除吗？",function(index){
+                        daleteByIds(ids,index);
+                    })
+                }
+            }
+        });
+        /**
+         * 获取批量删除的id
+         */
+        function getCheckId(date){
+            var arr=new Array();
+            for (var i=0;i<date.length;i++){
+                arr.push(date[i].id)
+            }
+            return arr.join(",");
+        }
+
+        /**
+         * 删除
+         */
+        function daleteByIds(ids){
+            $.ajax({
+                url:SURL+"lookhouse/deleteByIds",
+                type:"POST",
+                data:{"ids":ids},
+                success:function(result){
+                    if(result.code==200){
+                        layer.msg("删除成功",{
+                            icon:6,
+                            time:500
+                        },function(){
+                            parent.window.location.reload();//重新页面
+                            var iframeIndex = parent.layer.getFrameIndex(window.name);
+                            parent.layer.close(iframeIndex);
+                        });
+
+                    }else{
+                        layer.msg("删除失败");
+                    }
+                }
+            })
+            return false;
+
+        }
+
+        //监听表格复选框选择
+        table.on('checkbox(currentTableFilter)', function (obj) {
+            console.log(obj)
+        });
+
+
+        /**
+         * 拒绝租赁房子更改 看房状态
+         */
+        function updateStatus(id,index){
+            $.ajax({
+                url:SURL+"lookhouse/update",
+                type:"POST",
+                data:{"id":id},
+                success:function(result){
+                    if(result.code==200){
+                        layer.msg("拒绝操作成功",{
+                            icon:6,
+                            time:500
+                        },function(){
+                            parent.window.location.reload();//重新页面
+                            var iframeIndex = parent.layer.getFrameIndex(window.name);
+                            parent.layer.close(iframeIndex);
+                        });
+
+                    }else{
+                        layer.msg("拒绝操作失败");
+                    }
+                }
+            })
+            return false;
+        };
+
+        /**
+         * 根据看房申请请求id查询修改房东 租客信息
+         */
+        function queryByIdForm(id){
+            $.ajax({
+                url:SURL+"lookhouse/queryByID?id="+id,
+                type:"POST",
+                success:function(data){
+                    //拿到数据并渲染
+                    setFormValue(data);
+                }
+            })
+            return false;
+
+        };
+
+        /**
+         * 设置from中的信息
+         */
+        function setFormValue(data){
+            form.val("updateSubmit",{
+                "rentId":data.id,
+                "housesId":data.housesId,
+                "customerId":data.customerId,
+                "address":data.houses.address,
+                "numbers":data.houses.numbers,
+                "paymoney":data.houses.price,
+                "sfzh":data.owners.identity,
+                "ownername":data.owners.custname,
+                "identity":data.customer.identity,
+                "custname":data.customer.custname
+            })
+        };
+
+
+        table.on('tool(currentTableFilter)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'edit') {
+
+                var content = miniPage.getHrefContent('page/look/add.html');
+                var openWH = miniPage.getOpenWidthHeight();
+
+                var index = layer.open({
+                    title: '同意租赁房屋',
+                    type: 1,
+                    shade: 0.2,
+                    maxmin:true,
+                    shadeClose: true,
+                    area: [openWH[0] + 'px', openWH[1] + 'px'],
+                    offset: [openWH[2] + 'px', openWH[3] + 'px'],
+                    content: content,
+                });
+                queryByIdForm(data.id);
+                form.render();
+                $(window).on("resize", function () {
+                    layer.full(index);
+                });
+                return false;
+            } else if (obj.event === 'jujue') {
+                layer.confirm('真的要拒绝租赁吗？', function (index) {
+                   //调用删除功能即可
+                    updateStatus(data.id,index);
+                    layer.close(index);
+                });
+            }
+        });
+
+    });
+</script>

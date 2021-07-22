@@ -1,0 +1,1 @@
+var SURL='http://localhost:8888/';

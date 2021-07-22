@@ -1,0 +1,51 @@
+{
+  "homeInfo": {
+    "title": "首页",
+    "href": "page/welcome.html"
+  },
+  "logoInfo": {
+    "title": "租赁管理系统",
+    "image": "images/logo.png",
+    "href": ""
+  },
+  "menuInfo": [
+    {
+      "title": "我的租赁信息",
+      "icon": "fa fa-address-book",
+      "href": "",
+      "target": "_self",
+      "child": [
+        {
+          "title": "我的租赁信息",
+          "href": "page/other/myrent.html",
+          "icon": "fa fa-window-maximize",
+          "target": "_self"
+        },
+        {
+          "title": "我的报修信息",
+          "href": "page/other/myrepair.html",
+          "icon": "fa fa-window-maximize",
+          "target": "_self"
+        },
+        {
+          "title": "我的房租列表",
+          "href": "page/other/mypay.html",
+          "icon": "fa fa-window-maximize",
+          "target": "_self"
+        },{
+          "title": "看房在线申请",
+          "href": "page/other/lookhouse.html",
+          "icon": "fa fa-gears",
+          "target": "_self"
+        },
+        {
+          "title": "修改密码",
+          "href": "page/other/password.html",
+          "icon": "fa fa-gears",
+          "target": "_self"
+        }
+      ]
+    }
+
+  ]
+}

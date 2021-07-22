@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <link rel="icon" href="images/favicon.ico">
+    <link rel="stylesheet" href="lib/layui-v2.5.5/css/layui.css" media="all">
+    <link rel="stylesheet" href="lib/font-awesome-4.7.0/css/font-awesome.min.css" media="all">
+    <link rel="stylesheet" href="css/layuimini.css?v=2.0.1" media="all">
+    <link rel="stylesheet" href="css/themes/default.css" media="all">
+    <link rel="stylesheet" href="css/public.css" media="all">
+    <link rel="stylesheet" href="">
+
+    <script src="js/config.js" charset="utf-8"></script>
+</head>
+<body>
+<div class="layuimini-main">
+
+    <div class="layui-form layuimini-form">
+        <div class="layui-form-item">
+            <label class="layui-form-label required">身份证号</label>
+            <div class="layui-input-block">
+                <input type="text" name="identity" lay-verify="required" lay-reqtext="身份证号不能为空" placeholder="请输入身份证号" value="" class="layui-input">
+                <tip>填写自己管理账号的名称。</tip>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label required">租客姓名</label>
+            <div class="layui-input-block">
+                <input type="text" name="custname" lay-verify="required" lay-reqtext="姓名不能为空" placeholder="请输入用户名" value="" class="layui-input">
+
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label required">密码</label>
+            <div class="layui-input-block">
+                <input type="password" name="password" lay-verify="required"   class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label required">性别</label>
+            <div class="layui-input-block">
+                <input type="radio" name="sex" value="男" title="男">
+                <input type="radio" name="sex" value="女" title="女">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label required">手机</label>
+            <div class="layui-input-block">
+                <input type="number" name="phone" lay-verify="required" lay-reqtext="手机不能为空" placeholder="请输入手机" value="" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label required">联系地址</label>
+            <div class="layui-input-block">
+                <input type="text" name="address"  class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">职业</label>
+            <div class="layui-input-block">
+                <input type="text" name="career"  class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">备注信息</label>
+            <div class="layui-input-block">
+                <textarea name="remarks" class="layui-textarea" placeholder="请输入备注信息"></textarea>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn layui-btn-normal" lay-submit lay-filter="saveBtn" id="time">确认保存</button>
+               <!-- <span id="time">3</span-->
+                <a  class="layui-btn layui-btn-normal" href="page/login.html">返回登录</a>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+<script src="js/lay-config.js?v=2.0.0" charset="utf-8"></script>
+<script>
+    layui.use(['form', 'table'], function () {
+        var form = layui.form,
+            layer = layui.layer,
+            // table = layui.table,
+            $ = layui.$;
+        form.render();
+        //监听提交
+        form.on('submit(saveBtn)', function (data) {
+            //向后台发送数据并进行添加操作
+            $.ajax({
+                url:SURL+"customer/addCustomer",
+                type:"POST",
+                contentType:"application/json",
+                data:JSON.stringify(data.field),
+                success:function(result){
+                    //把json对象转string
+                    // result=JSON.parse(result);
+                    console.log(result)
+                    if(result.code==200){
+                        layer.msg("添加成功",{
+                            icon:6,
+                            time:500
+                        },function(){
+                            parent.window.location.reload();//重新页面
+                            var iframeIndex = parent.layer.getFrameIndex(window.name);
+                            parent.layer.close(iframeIndex);
+                        });
+
+                    }else{
+                        layer.msg(result.msg);
+                    }
+                }
+            })
+            return false;
+        });
+    });
+
+</script>
+</body>
+</html>

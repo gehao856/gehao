@@ -1,0 +1,82 @@
+
+<div class="layuimini-main">
+ <div class="layui-form layuimini-form" lay-filter="addSubmit">
+     <!---下列列表用户信息选择（搜索选择框）--->
+     <div class="layui-form-item">
+         <label class="layui-form-label required">房屋编号</label>
+         <div class="layui-input-block">
+             <select name="housesId" id="typeId" lay-verify="required"  lay-search="">
+                 <option value="">请输入房屋编号</option>
+             </select>
+         </div>
+     </div>
+
+     <div class="layui-form-item layui-form-text">
+         <label class="layui-form-label">备注信息</label>
+         <div class="layui-input-block">
+             <textarea name="remarks" class="layui-textarea" placeholder="请输入备注信息"></textarea>
+         </div>
+     </div>
+
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn layui-btn-normal" lay-submit  lay-filter="addSubmit">提交维护申请</button>
+            </div>
+        </div>
+
+
+</div>
+</div>
+<script>
+    layui.use(['form', 'table', 'upload','laydate'], function () {
+        var form = layui.form,
+            layer = layui.layer,
+            laydate=layui.laydate,
+            $ = layui.$,
+            upload = layui.upload;
+
+        //动态获取房屋编号其他信息
+        $.get(SURL+"houses/housesByNumbers",{},function (data) {
+            var list=data;
+            var select=document.getElementById("typeId");
+            if(list!=null|| list.size()>0){
+                for(var c in list){
+                    var option=document.createElement("option");
+                    option.setAttribute("value",list[c].id);
+                    option.innerText=list[c].numbers;
+                    select.appendChild(option);
+                }
+            }
+            form.render('select');
+        },"json");
+
+
+        //监听提交
+        form.on('submit(addSubmit)', function (data) {
+            console.log(data.field);
+            //向后台发送数据并进行添加操作 添加合同
+            $.ajax({
+                url:SURL+"repair/add",
+                type:"POST",
+                contentType:"application/json",
+                data:JSON.stringify(data.field),
+                success:function(result){
+                    if(result.code==200){
+                        layer.msg("提交请求成功",{
+                            icon:6,
+                            time:500
+                        },function(){
+                            parent.window.location.reload();//重新页面
+                            var iframeIndex = parent.layer.getFrameIndex(window.name);
+                            parent.layer.close(iframeIndex);
+                        });
+
+                    }else{
+                        layer.msg("提交失败");
+                    }
+                }
+            })
+            return false;
+        });
+    });
+</script>

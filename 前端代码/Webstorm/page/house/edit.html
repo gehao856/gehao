@@ -1,0 +1,175 @@
+<div class="layuimini-main">
+
+    <div class="layui-form layuimini-form" lay-filter="updateSubmit">
+        <input type="hidden" name="id">
+        <input type="hidden" id="sheng">
+        <input type="hidden" id="shi">
+        <input type="hidden" id="xian">
+
+        <div class="layui-form-item">
+            <label class="layui-form-label required">房屋编号</label>
+            <div class="layui-input-block">
+                <input type="text" name="numbers" lay-verify="required" lay-reqtext="房屋编号不能为空" placeholder="请输入房屋编号" value="" class="layui-input">
+                <tip>填写房屋编号信息。</tip>
+            </div>
+        </div>
+        <!--房东信息管理-->
+        <div class="layui-form-item">
+            <label class="layui-form-label required">户主信息</label>
+            <div class="layui-input-block">
+                <select name="ownerId" id="ownerId" lay-verify="required" lay-search="">
+                    <option value="">请选择</option>
+                </select>
+            </div>
+        </div>
+        <!--房东信息结束-->
+
+        <!--省市县-->
+        <div class="layui-form-item" id="area-picker">
+            <label class="layui-form-label">所属地区</label>
+            <div class="layui-input-inline">
+                <select name="province" id="province" class="province-selector" data-value="广东省" lay-filter="province-1">
+                    <option value="">请选择省</option>
+                </select>
+            </div>
+            <div class="layui-input-inline">
+                <select name="city"  id="city"  class="city-selector" data-value="深圳市" lay-filter="city-1">
+                    <option value="">请选择市</option>
+                </select>
+            </div>
+            <div class="layui-input-inline">
+                <select name="county" id="county" class="county-selector" data-value="龙岗区" lay-filter="county-1">
+                    <option value="">请选择县/区</option>
+                </select>
+            </div>
+        </div>
+        <!--省市县end-->
+
+        <!--房屋图片-->
+        <div class="layui-form-item">
+            <input type="hidden" name="imgs" id="imgs">
+            <label class="layui-form-label required">房屋图片</label>
+            <div class="layui-upload-drag" id="test10">
+                <i class="layui-icon"></i>
+                <p>点击上传，或将文件拖拽到此处</p>
+                <div class="layui-hide" id="uploadDemoView">
+                    <hr>
+                    <img src="" alt="上传成功后渲染" style="max-width: 196px">
+                </div>
+            </div>
+        </div>
+        <!--房屋图片end-->
+        <div class="layui-form-item">
+            <label class="layui-form-label required">房屋状态</label>
+            <div class="layui-input-block">
+                <input type="radio" name="status" value="1" title="未出租">
+                <input type="radio" name="status" value="2" title="出租中">
+                <input type="radio" name="status" value="3" title="已退租">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label required">详细地址</label>
+            <div class="layui-input-block">
+                <input type="text" name="address"  class="layui-input">
+            </div>
+        </div>
+
+
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">备注信息</label>
+            <div class="layui-input-block">
+                <textarea name="remarks" class="layui-textarea" placeholder="请输入备注信息"></textarea>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn layui-btn-normal" lay-submit lay-filter="updateSubmit">确认保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    //插入省市县数据信息
+    layui.config({
+        base:'./mods/',
+        version:'1.0'
+    })
+    layui.use(['form','upload', 'table','layarea'], function () {
+        var form = layui.form,
+            layer = layui.layer,
+            // table = layui.table,
+            layarea=layui.layarea,
+            $ = layui.$,upload = layui.upload;
+        form.render();
+
+        //渲染省市联动效果
+        layarea.render({
+            elem:'#area-picker',
+            change:function(res){
+                console.log(res);
+            }
+        });
+
+        //省
+        $("#province").find("option").each(function(){
+            if($(this).text()==$("#sheng").val()){
+                $(this).attr("selected",true);
+            }
+        });
+        //市
+        var shi2=$("#shi").val();
+        $("#city").text(shi2);
+        $("#city").append("<option value="+ shi2 +">"+shi2+"</option>");
+
+        //市
+        var xian2=$("#xian").val();
+        $("#county").text(xian2);
+        $("#county").append("<option value="+ xian2 +">"+xian2+"</option>");
+
+        layui.form.render('select');
+        //图片上传功能
+        upload.render({
+            elem: '#test10'
+            ,url: SURL+'houses/fileUpload' //改成您自己的上传接口
+            ,done: function(res){
+                layer.msg('上传成功');
+                layui.$('#uploadDemoView').removeClass('layui-hide').find('img').attr('src', SURL+"images/"+res.msg);
+                //隐藏图片赋值
+                $("#imgs").val("images/"+res.msg);
+                console.log(res)
+            }
+        });
+
+
+
+        //监听提交
+        form.on('submit(updateSubmit)', function (data) {
+            //向后台发送数据并进行添加操作
+            $.ajax({
+                url:SURL+'/houses/updateHouses',
+                type:"POST",
+                contentType:"application/json",
+                data:JSON.stringify(data.field),
+                success:function(result){
+                    //把json对象转string
+                    if(result.code==200){
+                        layer.msg("修改成功",{
+                            icon:6,
+                            time:500
+                        },function(){
+                            parent.window.location.reload();//重新页面
+                            var iframeIndex = parent.layer.getFrameIndex(window.name);
+                            parent.layer.close(iframeIndex);
+                        });
+
+                    }else{
+                        layer.msg(result.msg);
+                    }
+                }
+            })
+            return false;
+        });
+    });
+</script>

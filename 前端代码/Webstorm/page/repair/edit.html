@@ -1,0 +1,63 @@
+<div class="layuimini-main" >
+
+    <div class="layui-form layuimini-form" lay-filter="updateSubmit">
+        <input type="hidden" name="id" >
+
+        <div class="layui-form-item">
+            <label class="layui-form-label required">修复状态</label>
+            <div class="layui-input-block">
+                <input type="radio" name="status" value="0" title="未修复">
+                <input type="radio" name="status" value="1" title="已修复">
+            </div>
+        </div>
+
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">维护信息</label>
+            <div class="layui-input-block">
+                <textarea name="remarks" class="layui-textarea" placeholder="请输入维护信息"></textarea>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn layui-btn-normal" lay-submit lay-filter="updateSubmit">确认修复</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    layui.use(['form', 'table'], function () {
+        var form = layui.form,
+            layer = layui.layer,
+            // table = layui.table,
+            $ = layui.$;
+        form.render();
+        //监听提交
+        form.on('submit(updateSubmit)', function (data) {
+            console.log(data.field);
+            //向后台发送数据并进行添加操作
+            $.ajax({
+                url:SURL+"repair/update",
+                type:"POST",
+                contentType:"application/json",
+                data:JSON.stringify(data.field),
+                success:function(result){
+                    if(result.code==200){
+                        layer.msg("维修成功",{
+                            icon:6,
+                            time:500
+                        },function(){
+                            parent.window.location.reload();//重新页面
+                            var iframeIndex = parent.layer.getFrameIndex(window.name);
+                            parent.layer.close(iframeIndex);
+                        });
+
+                    }else{
+                        layer.msg("维修失败");
+                    }
+                }
+            })
+            return false;
+        });
+    });
+</script>

@@ -1,0 +1,63 @@
+<div class="layuimini-container layuimini-page-anim">
+    <div class="layuimini-main">
+
+
+
+
+        <table class="layui-hide" id="currentTableId" lay-filter="currentTableFilter"></table>
+
+
+
+    </div>
+</div>
+
+<script>
+    layui.use(['form', 'table','miniPage','element'], function () {
+        var $ = layui.jquery,
+            form = layui.form,
+            table = layui.table,
+            miniPage = layui.miniPage;
+
+        table.render({
+            elem: '#currentTableId',
+            url: SURL+'rentals/queryRentalsAll2',
+            toolbar: '#toolbarDemo',
+            defaultToolbar: ['filter', 'exports', 'print', {
+                title: '提示',
+                layEvent: 'LAYTABLE_TIPS',
+                icon: 'layui-icon-tips'
+            }],
+            cols: [[
+                // {type: "checkbox", width: 50},
+                // {field: 'id', width: 80, title: 'ID', sort: true},
+                {field: 'numbers', width: 100, title: '房屋编号'},
+                {field: 'custname', width: 80, title: '租客姓名'},
+                {field: 'phone', width: 100, title: '联系方式'},
+                {field: 'jfr', width: 80, title: '缴费人'},
+                {field: 'ksrq', width: 140, title: '开始日期'},
+                {field: 'jzrq', width: 140, title: '截至日期'},
+                {field: 'money', width: 80, title: '交付金额'},
+                {field: 'date', width: 180, title: '缴费时间'},
+                {filed:'status',title: '交租状态',width: 100,
+                    templet: function(res){
+                        if(res.status=='超时'){
+                            return '<span class="layui-badge layui-bg-red">超时</span>';
+                        }else if(res.status=='要缴费了') {
+                            return '<span class="layui-badge layui-bg-yellow">要缴费了</span>';
+                        }else{
+                            return '<span class="layui-badge layui-bg-green">已经缴费</span>';
+                        }
+                    }}
+
+
+            ]],
+            limits: [10, 15, 20, 25, 50, 100],
+            limit: 15,
+            page: true,
+            id:'testReload',
+            skin: 'line'
+        });
+
+
+    });
+</script>

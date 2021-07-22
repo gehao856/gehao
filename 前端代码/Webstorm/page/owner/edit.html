@@ -1,0 +1,99 @@
+<div class="layuimini-main" >
+
+    <div class="layui-form layuimini-form" lay-filter="updateSubmit">
+        <input type="hidden" name="id" >
+        <div class="layui-form-item">
+            <label class="layui-form-label required">房主姓名</label>
+            <div class="layui-input-block">
+                <input type="text" name="custname" lay-verify="required"  class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label required">性别</label>
+            <div class="layui-input-block">
+                <input type="radio" name="sex" value="男" title="男" checked="">
+                <input type="radio" name="sex" value="女" title="女">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label required">身份证号</label>
+            <div class="layui-input-block">
+                <input type="text" name="identity" lay-verify="required" lay-reqtext="身份证号不能为空" placeholder="请输入用户名" value="" class="layui-input">
+                <tip>填写自己管理账号的名称。</tip>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label required">手机</label>
+            <div class="layui-input-block">
+                <input type="number" name="phone" lay-verify="required" lay-reqtext="手机不能为空" placeholder="请输入手机" value="" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label required">联系地址</label>
+            <div class="layui-input-block">
+                <input type="text" name="address"  class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">职业</label>
+            <div class="layui-input-block">
+                <input type="text" name="career"  class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">备注信息</label>
+            <div class="layui-input-block">
+                <textarea name="remarks" class="layui-textarea" placeholder="请输入备注信息"></textarea>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn layui-btn-normal" lay-submit lay-filter="updateSubmit">确认修改</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    layui.use(['form', 'table'], function () {
+        var form = layui.form,
+            layer = layui.layer,
+            // table = layui.table,
+            $ = layui.$;
+        form.render();
+        //监听提交
+        form.on('submit(updateSubmit)', function (data) {
+            console.log(data.field);
+            //向后台发送数据并进行添加操作
+            $.ajax({
+                url:SURL+"owner/updateOwner",
+                type:"POST",
+                contentType:"application/json",
+                data:JSON.stringify(data.field),
+                success:function(result){
+                    //把json对象转string
+                    // result=JSON.parse(result);
+                    console.log(result)
+                    if(result.code==200){
+                        layer.msg("修改成功",{
+                            icon:6,
+                            time:500
+                        },function(){
+                            parent.window.location.reload();//重新页面
+                            var iframeIndex = parent.layer.getFrameIndex(window.name);
+                            parent.layer.close(iframeIndex);
+                        });
+
+                    }else{
+                        layer.msg("修改失败");
+                    }
+                }
+            })
+            return false;
+        });
+    });
+</script>

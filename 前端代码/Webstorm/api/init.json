@@ -1,0 +1,181 @@
+{
+  "homeInfo": {
+    "title": "首页",
+    "href": "page/welcome.html?t=1"
+  },
+  "logoInfo": {
+    "title": "租赁管理系统",
+    "image": "images/logo.png",
+    "href": ""
+  },
+  "menuInfo": [
+    {
+      "title": "常规管理",
+      "icon": "fa fa-address-book",
+      "href": "",
+      "target": "_self",
+      "child": [
+        {
+          "title": "户主信息管理",
+          "href": "",
+          "icon": "fa fa-calendar",
+          "target": "_self",
+          "child": [
+            {
+              "title": "户主信息管理",
+              "href": "page/owner/OwnerIndex.html",
+              "icon": "fa fa-list-alt",
+              "target": "_self"
+            }
+          ]
+        },
+        {
+          "title": "租客信息管理",
+          "href": "",
+          "icon": "fa fa-calendar",
+          "target": "_self",
+          "child": [
+            {
+              "title": "租客信息管理",
+              "href": "page/tenant/TenantIndex.html",
+              "icon": "fa fa-gears",
+              "target": "_self"
+            }
+          ]
+        },
+        {
+          "title": "房屋信息管理",
+          "href": "",
+          "icon": "fa fa-calendar",
+          "target": "_self",
+          "child": [
+            {
+              "title": "房屋信息管理",
+              "href": "page/house/Index.html",
+              "icon": "fa fa-gears",
+              "target": "_self"
+            }
+          ]
+        },
+        {
+          "title": "管理员信息管理",
+          "href": "",
+          "icon": "fa fa-calendar",
+          "target": "_self",
+          "child": [
+            {
+              "title": "管理员信息管理",
+              "href": "page/admin/index.html",
+              "icon": "fa fa-gears",
+              "target": "_self"
+            }
+          ]
+        },
+        {
+          "title": "公告信息管理",
+          "href": "page/notice/index.html",
+          "icon": "fa fa-arrow-up",
+          "target": "_self"
+        },
+
+        {
+          "title": "异常页面",
+          "href": "",
+          "icon": "fa fa-home",
+          "target": "_self",
+          "child": [
+            {
+              "title": "404页面",
+              "href": "page/404.html",
+              "icon": "fa fa-hourglass-end",
+              "target": "_self"
+            }
+          ]
+        },
+        {
+          "title": "其它界面",
+          "href": "",
+          "icon": "fa fa-snowflake-o",
+          "target": "",
+          "child": [
+            {
+              "title": "按钮示例",
+              "href": "page/button.html",
+              "icon": "fa fa-snowflake-o",
+              "target": "_self"
+            },
+            {
+              "title": "弹出层",
+              "href": "page/layer.html",
+              "icon": "fa fa-shield",
+              "target": "_self"
+            }
+          ]
+        }
+      ]
+    },
+
+
+    {
+      "title": "租赁管理",
+      "icon": "fa fa-lemon-o",
+      "href": "",
+      "target": "_self",
+      "child": [
+        {
+          "title": "看房申请管理",
+          "href": "page/look/index.html",
+          "icon": "fa fa-dashboard",
+          "target": "_self"
+        },
+        {
+          "title": "租赁信息管理",
+          "href": "page/rent/index.html",
+          "icon": "fa fa-dot-circle-o",
+          "target": "_self"
+        },
+
+
+        {
+          "title": "收租信息管理",
+          "href": "page/pay/index.html",
+          "icon": "fa fa-angle-double-down",
+          "target": "_self"
+        },
+
+        {
+          "title": "报修信息管理",
+          "href": "page/repair/index.html",
+          "icon": "fa fa-edit",
+          "target": "_self"
+        }
+      ]
+    },
+    {
+      "title": "统计分析",
+      "icon": "fa fa-slideshare",
+      "href": "",
+      "target": "_self",
+      "child": [
+        {
+          "title": "维修数据统计",
+          "href": "page/tongji/index.html",
+          "icon": "fa fa-superpowers",
+          "target": "_self"
+        },
+        {
+          "title": "收租金额的统计(月）",
+          "href": "page/tongji/index2.html",
+          "icon": "fa fa-superpowers",
+          "target": "_self"
+        },
+        {
+          "title": "按季度收租统计",
+          "href": "page/tongji/index3.html",
+          "icon": "fa fa-superpowers",
+          "target": "_self"
+        }
+      ]
+    }
+  ]
+}
