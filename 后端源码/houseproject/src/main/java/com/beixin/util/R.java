@@ -73,9 +73,5 @@ public class R implements Serializable {
         return this;
     }
     
-    //gehao
-    public R gehao(Long total) {
-        this.count = total;
-        return this;
-    }
+   
 }
