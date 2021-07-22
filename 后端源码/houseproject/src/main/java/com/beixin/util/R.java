@@ -67,4 +67,15 @@ public class R implements Serializable {
         this.count = total;
         return this;
     }
+    
+     public R setTotal(Long total) {
+        this.count = total;
+        return this;
+    }
+    
+    //gehao
+    public R gehao(Long total) {
+        this.count = total;
+        return this;
+    }
 }
