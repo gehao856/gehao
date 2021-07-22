@@ -15,7 +15,6 @@ public class Constants {
 
     public final static String CACHE_NAME = "KACache";
     
-    //姓名
-    public final static String GEHAO = "java";
+   
 
 }
